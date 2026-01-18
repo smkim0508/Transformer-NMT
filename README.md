@@ -19,7 +19,11 @@ Refining my PyTorch skills to build models from scratch [2] - Re-creating Transf
     - No universal set of stop words for all tasks
     - Early NLP task/models focused more on topic not deep position/contextual information, so stop words included pronouns like "he"/"she", but these can be important in more complex tasks.
 - **Lemmatization** uses collected dictionary (e.g. WordNet) to intelligently reduce words to its base root (e.g. studies -> study, has -> have), whereas **Stemming** uses rule-based truncation logic that is often more harsh and non-intelligent (e.g. studies -> studi, has -> ha).
-- 
+- Sentiment analysis can be done with static, non-ML based approach like VADER lexicon.
+    - VADER is a dictionary of human-rated words, and heuristic rules determine the sentiment of given text.
+    - Signals like emphasis, negation, intensity modifier (e.g. very), contribute to the scores.
+    - Compound score is often most useful; even if ratio of scores where pos is 1.0 and rest are 0.0, the compound can hint to just how positive the given text was.
+
 ### TODO:
 - NLTK library exploration
 - transformer architecture building
