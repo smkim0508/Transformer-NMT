@@ -18,7 +18,8 @@ Refining my PyTorch skills to build models from scratch [2] - Re-creating Transf
 - Stop words are a set of words filtered out during an NLP task to imporve accuracy and remove noise/uncertainty.
     - No universal set of stop words for all tasks
     - Early NLP task/models focused more on topic not deep position/contextual information, so stop words included pronouns like "he"/"she", but these can be important in more complex tasks.
-
+- **Lemmatization** uses collected dictionary (e.g. WordNet) to intelligently reduce words to its base root (e.g. studies -> study, has -> have), whereas **Stemming** uses rule-based truncation logic that is often more harsh and non-intelligent (e.g. studies -> studi, has -> ha).
+- 
 ### TODO:
 - NLTK library exploration
 - transformer architecture building
