@@ -14,6 +14,10 @@ Refining my PyTorch skills to build models from scratch [2] - Re-creating Transf
 - `nltk.tokenize.sent_tokenize()` splits text by sentences.
 - `nltk.probability.FreqDist(tokens)` to turn tokens into frequency distribution.
     - Pair with matlab pyplot to diplay graph.
+### NLP
+- Stop words are a set of words filtered out during an NLP task to imporve accuracy and remove noise/uncertainty.
+    - No universal set of stop words for all tasks
+    - Early NLP task/models focused more on topic not deep position/contextual information, so stop words included pronouns like "he"/"she", but these can be important in more complex tasks.
 
 ### TODO:
 - NLTK library exploration
