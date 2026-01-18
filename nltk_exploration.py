@@ -9,6 +9,8 @@ from nltk.probability import FreqDist
 from nltk.corpus import stopwords
 # lemmatization
 from nltk.stem import WordNetLemmatizer, PorterStemmer
+# sentiment analyzer
+from nltk.sentiment import SentimentIntensityAnalyzer
 
 # download punkt tokenizer
 # NOTE: this can be a one-time download and commented thereafter
@@ -64,14 +66,21 @@ print(f"\n3) Lemmazation + Stemming Exploration\n")
 nltk.download('wordnet')
 
 # test words to compare lemmatization vs stemming
-test_words = ["doing", "do", "going", "go", "gone", "have", "had", "has", "having", "I", "you", "coding"]
+test_words = ["better", "studies", "doing", "do", "going", "go", "gone", "have", "had", "has", "having", "I", "you", "coding"]
 # init lemmatizer + stemmer
-lemmatizer = WordNetLemmatizer()
-stemmer = PorterStemmer()
+lemmatizer = WordNetLemmatizer() # uses intelligent WordNet dictionary-based lemmatization
+stemmer = PorterStemmer() # uses rule-based, faster stemming
 
 # compare lemmatization and stemming
 print(f"Comparing lemmatization and stemming for the test words.")
 print(f"{'Original':<15} | {'Lemmatization':<15} | {'Stemming':<15}")
 print("-" * 50)
 for word in test_words:
-    print(f"{word:<15} | {lemmatizer.lemmatize(word):<15} | {stemmer.stem(word):<15}")
+    # NOTE: lemmatization can take args for verb form, noun form, etc
+    print(f"{word:<15} | {lemmatizer.lemmatize(word, pos='v'):<15} | {stemmer.stem(word):<15}")
+
+# 4) sentiment analysis
+print(f"\n4) Sentiment Analysis Exploration\n")
+# download package for sentiment analysis
+nltk.download('vader_lexicon')
+# TODO: complete this section
