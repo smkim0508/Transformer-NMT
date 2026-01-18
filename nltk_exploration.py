@@ -1,8 +1,14 @@
 # exploring the nltk library
+# word tokenizer
 import nltk
 from nltk.tokenize import word_tokenize, sent_tokenize
 import matplotlib.pyplot as plt
+# frequency distribution
 from nltk.probability import FreqDist
+# stop words
+from nltk.corpus import stopwords
+# lemmatization
+from nltk.stem import WordNetLemmatizer, PorterStemmer
 
 # download punkt tokenizer
 # NOTE: this can be a one-time download and commented thereafter
@@ -12,6 +18,7 @@ nltk.download('punkt_tab')
 text = "Hello, world. Don't skip this part! This is an example sentence for the NLTK world."
 
 # 1) tokenization & distribution graphs
+print(f"1) Tokenization Exploration\n")
 # word tokenization
 tokens = word_tokenize(text)
 print(f"word tokenization: {tokens}")
@@ -33,12 +40,12 @@ fd.plot(20, cumulative=False, title="freq. distribution for normal text tokens")
 plt.show() # display graph with matplotlib, fd.plot() is integrated
 
 # 2) stop words
+print(f"\n2) Stop Words Exploration\n")
 # download package for stopwords
 nltk.download('stopwords')
 
 # observe stopwords in english provided by NLTK library
 # NOTE: use other libraries for different set of stop words
-from nltk.corpus import stopwords
 stopwords = stopwords.words('english')
 print(f"stop words: {stopwords}")
 
@@ -50,3 +57,21 @@ filtered_tokens = [token for token in tokens if token not in stopwords_set]
 print(f"filtered tokens: {filtered_tokens}")
 print(f"original tokens: {tokens}")
 print(f"words filtered out: {set(tokens) - set(filtered_tokens)}")
+
+# 3) lemmatization + stemming
+print(f"\n3) Lemmazation + Stemming Exploration\n")
+# download package for lemmatization
+nltk.download('wordnet')
+
+# test words to compare lemmatization vs stemming
+test_words = ["doing", "do", "going", "go", "gone", "have", "had", "has", "having", "I", "you", "coding"]
+# init lemmatizer + stemmer
+lemmatizer = WordNetLemmatizer()
+stemmer = PorterStemmer()
+
+# compare lemmatization and stemming
+print(f"Comparing lemmatization and stemming for the test words.")
+print(f"{'Original':<15} | {'Lemmatization':<15} | {'Stemming':<15}")
+print("-" * 50)
+for word in test_words:
+    print(f"{word:<15} | {lemmatizer.lemmatize(word):<15} | {stemmer.stem(word):<15}")
