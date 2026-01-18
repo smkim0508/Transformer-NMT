@@ -77,6 +77,7 @@ print(f"{'Original':<15} | {'Lemmatization':<15} | {'Stemming':<15}")
 print("-" * 50)
 for word in test_words:
     # NOTE: lemmatization can take args for verb form, noun form, etc
+    # if lemmatizer can't find word in the dictionary corpus for the given part of speech, it will return the original word
     print(f"{word:<15} | {lemmatizer.lemmatize(word, pos='v'):<15} | {stemmer.stem(word):<15}")
 
 # 4) sentiment analysis
