@@ -84,4 +84,17 @@ for word in test_words:
 print(f"\n4) Sentiment Analysis Exploration\n")
 # download package for sentiment analysis
 nltk.download('vader_lexicon')
-# TODO: complete this section
+
+# init SIA using VADER lexicon NOTE: rule-based, not ML
+sentiment_analyzer = SentimentIntensityAnalyzer()
+
+# verify SIA scores for obvious cases
+neg_sia_scores = sentiment_analyzer.polarity_scores("BAD")
+pos_sia_scores = sentiment_analyzer.polarity_scores("GOOD")
+neutral_sia_scores = sentiment_analyzer.polarity_scores("It is snowing.")
+print(f"neg sia score: {neg_sia_scores}, pos sia score: {pos_sia_scores}, neutral sia score: {neutral_sia_scores}")
+
+# attempt more complex sentences
+# NOTE: punctuation seems to have a small impact on SIA score.
+confusing_sia_scores = sentiment_analyzer.polarity_scores("It's a very sunny day! The food was good but the service was terrible.")
+print(f"confusing sia score: {confusing_sia_scores}")
