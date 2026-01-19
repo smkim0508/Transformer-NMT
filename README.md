@@ -23,6 +23,11 @@ Refining my PyTorch skills to build models from scratch [2] - Re-creating Transf
     - VADER is a dictionary of human-rated words, and heuristic rules determine the sentiment of given text.
     - Signals like emphasis, negation, intensity modifier (e.g. very), contribute to the scores.
     - Compound score is often most useful; even if ratio of scores where pos is 1.0 and rest are 0.0, the compound can hint to just how positive the given text was.
+- Synonyms / Antonyms can be found using synsets. A synset is a similar concept to the original word.
+    - The list of synsets for a given word in the dictionary is ordered by the frequency of the word's usage in the dictionary (e.g. "good" -> "good" as the first synset, but "automobile" -> "car" as it's first synset)
+    - `synset.lemmas()` provides all synonym words for a synset.
+    - Therefore, by collecting all lemmas for each synset of a given word (double loop), we can effectively collect all synonyms of a word, but this may contain duplicates.
+    - Likewise, take `synset.antonyms()` if exists to collect all antonyms.
 
 ### TODO:
 - NLTK library exploration
