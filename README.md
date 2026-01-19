@@ -2,7 +2,7 @@
 Refining my PyTorch skills to build models from scratch [2] - Re-creating Transformer-based Neural Machine Translation model with NLTK library.
 *This README will also contain my personal notes as I review key concepts and practice with examples.*
 - This project is also to be used as custom tutoring material in the future
-NOTE: The NMT is built, trained, and evaluated using Google Colab's cloud resources. It's architecture and comments are documented on a Jupyter/Python notebook: `Transformer_NMT.ipynb`.
+NOTE: The NMT is built, trained, and evaluated using Google Colab's cloud resources. It's architecture and comments are documented on a Jupyter/Python notebook: `transformer_nmt.ipynb`.
 
 ## NOTES:
 ### NLTK Library
