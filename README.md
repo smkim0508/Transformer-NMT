@@ -30,6 +30,8 @@ Refining my PyTorch skills to build models from scratch [2] - Re-creating Transf
     - Likewise, take `synset.antonyms()` if exists to collect all antonyms.
 
 ### TODO:
-- NLTK library exploration
 - transformer architecture building
 - NMT re-creation
+
+### Acknowledgements:
+NLTK exploration referenced the [Official NLTK Documentation](https://www.nltk.org/) and the following [YouTube tutorial](https://www.youtube.com/@ProgrammingKnowledge) with self-learning and modifications.
