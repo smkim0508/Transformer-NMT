@@ -11,6 +11,8 @@ from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer, PorterStemmer
 # sentiment analyzer
 from nltk.sentiment import SentimentIntensityAnalyzer
+# WordNet dictionary for synonym/antonyms
+from nltk.corpus import wordnet
 
 # download punkt tokenizer
 # NOTE: this can be a one-time download and commented thereafter
@@ -98,3 +100,33 @@ print(f"neg sia score: {neg_sia_scores}, pos sia score: {pos_sia_scores}, neutra
 # NOTE: punctuation seems to have a small impact on SIA score.
 confusing_sia_scores = sentiment_analyzer.polarity_scores("It's a very sunny day! The food was good but the service was terrible.")
 print(f"confusing sia score: {confusing_sia_scores}")
+
+# 5) synonym / antonyms with WordNet
+
+# fetch the pseudo-meaning for a word: meaning for the first synset (by frequency) of the word -> gives close enough "correct" meaning
+# NOTE: each item in this list will be a "Synset" object, which has various attributes like definition
+# NOTE: the first synset for the word is OFTEN the word itself, but not always; it's determined by the frquency of usage in the dictionary.
+word = "automobile"
+synsets = wordnet.synsets(word)
+first_synset = synsets[0] if synsets else None
+print(f"Pseudo meaning for {word}: {first_synset.definition() if first_synset else None}, first synonym: {first_synset.lemmas()[0].name() if first_synset else None}")
+
+# get all synonyms for a word
+synsets = wordnet.synsets("Good")
+synonyms = []
+for syn in synsets:
+    if not syn:
+        continue
+    for lemma in syn.lemmas():
+        synonyms.append(lemma.name())
+print(f"Synonyms for {word}: {synonyms}")
+
+# get antonyms for a word
+antonyms = []
+for syn in synsets:
+    if not syn:
+        continue
+    for lemma in syn.lemmas():
+        if lemma.antonyms():
+            antonyms.append(lemma.antonyms()[0].name())
+print(f"Antonyms for {word}: {antonyms}")
