@@ -42,8 +42,11 @@ NOTE: The NMT is built, trained, and evaluated using Google Colab's cloud resour
     - For a GPT-like language model, the context size is larger, usually referred to a "block" of text being the input for next unit prediction.
 - The prediction happens on an encoded version of the Vocabulary (all possible unit of language supported by model)
     - Simple encoder-decoder would map 1-to-1 between language and numerical representation.
-    - Could have larger unit size with larger Vocab or smaller unit size with smaller Vocab
+        - For more complex encoder/decoders, review: SentencePiece (Google) or tiktoken (OpenAI)
+    - Could have larger unit size with larger Vocab and smaller encoding length or smaller unit size with smaller Vocab and larger encoding length
         - In practice, unit is typically a couple chars (tokens, or sub-words), and Vocab is pretty large.
+- When training transformers, we typically only train w/ chunks of data sampled from the train data, not the entire text. The block_size here becomes the context size.
+- 
 42:20
 
 ### TODO:
