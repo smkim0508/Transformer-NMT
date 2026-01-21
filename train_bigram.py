@@ -1,7 +1,11 @@
 # training the bigram language model
+# torch essentials
 import torch
 import torch.nn as nn
 from torch.nn import functional as F
+
+# training monitoring
+from tqdm import tqdm
 
 # models
 from models.bigram import BigramLanguageModel
@@ -10,7 +14,7 @@ from models.bigram import BigramLanguageModel
 batch_size = 32
 block_size = 8
 max_iters = 3000
-eval_intervals = 300 # used for averaging loss during train
+eval_interval = 300 # used for averaging loss during train
 learning_rate = 1e-2
 device = "cuda" if torch.cuda.is_available() else "cpu" # use GPU if available TODO: does tensor.to(device) not affect for CPU?
 eval_iters = 200
@@ -39,7 +43,7 @@ n = int(0.9*len(data))
 train_data = data[:n]
 val_data = data[n:]
 
-# define helper functions below
+# helper functions defined below
 def get_batch(split, batch_size, block_size):
     """
     Batches random chunks of data from train/val data
@@ -76,3 +80,41 @@ def estimate_loss(model):
         out[split] = losses.mean() # average loss for each split
     model.train()
     return out
+
+if __name__ == "__main__":
+    # actual training loop defined here
+    model = BigramLanguageModel(vocab_size=vocab_size)
+    m = model.to(device) # use GPU if available
+
+    # optimizer set to Adam
+    optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate)
+    
+    losses = []
+    # training loop
+    for iter in tqdm(range(max_iters)):
+        # calculate the average loss every eval_interval
+        if iter % eval_interval == 0:
+            # NOTE: since we have a progress bar, avoid prinitng loss until the very end
+            loss = (estimate_loss(m))
+            loss.update({'iter': iter})
+            losses.append(loss)
+
+        # sample batch data
+        xb, yb = get_batch('train', batch_size=batch_size, block_size=block_size)
+
+        # eval the loss and update weights
+        logits, loss = m.forward(xb, yb)
+        if not loss:
+            print(f"Error: loss must exist, please verify target is set")
+            break
+        optimizer.zero_grad(set_to_none=True) # init gradients
+        loss.backward()
+        optimizer.step() # steps down gradient TODO: exact functionality?
+
+    for loss in losses:
+        print(f"Step {loss['iter']}: train loss {loss['train']:.4f}, val loss {loss['val']:.4f}")
+    
+    # generate text from model
+    context = torch.zeros((1,1), dtype=torch.long, device=device)
+    print(f"Generated text: {decode(m.generate(context, max_new_tokens=500)[0].tolist())}")
+    
