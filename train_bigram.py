@@ -70,7 +70,7 @@ def estimate_loss(model):
     - model is passed in to set eval/train stages
     """
     out = {}
-    model.eval()
+    model.eval() # set to eval mode
     for split in ['train', 'val']:
         losses = torch.zeros(eval_iters)
         for k in range(eval_iters):
@@ -78,20 +78,22 @@ def estimate_loss(model):
             logits, loss = model.forward(X, Y)
             losses[k] = loss.item() # accumulate loss
         out[split] = losses.mean() # average loss for each split
-    model.train()
+    model.train() # return back to training mode
     return out
 
 if __name__ == "__main__":
+    print(f"Initializing model...")
     # actual training loop defined here
     model = BigramLanguageModel(vocab_size=vocab_size)
     m = model.to(device) # use GPU if available
+    print(f"Model initialized on {device}!")
 
     # optimizer set to Adam
     optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate)
     
     losses = []
     # training loop
-    for iter in tqdm(range(max_iters)):
+    for iter in tqdm(range(max_iters), desc="Training Model"):
         # calculate the average loss every eval_interval
         if iter % eval_interval == 0:
             # NOTE: since we have a progress bar, avoid prinitng loss until the very end
@@ -117,4 +119,4 @@ if __name__ == "__main__":
     # generate text from model
     context = torch.zeros((1,1), dtype=torch.long, device=device)
     print(f"Generated text: {decode(m.generate(context, max_new_tokens=500)[0].tolist())}")
-    
+
