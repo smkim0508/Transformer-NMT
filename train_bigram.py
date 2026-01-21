@@ -12,7 +12,7 @@ block_size = 8
 max_iters = 3000
 eval_intervals = 300 # used for averaging loss during train
 learning_rate = 1e-2
-device = "cuda" if torch.cuda.is_available() else "cpu"
+device = "cuda" if torch.cuda.is_available() else "cpu" # use GPU if available TODO: does tensor.to(device) not affect for CPU?
 eval_iters = 200
 
 torch.manual_seed(1337) # for reproducibility
@@ -55,6 +55,7 @@ def get_batch(split, batch_size, block_size):
     # e.g. 3rd tagret in 1st batch of y: 11, which is the expected next char given 0-2 chars in 1st batch of x: 69, 75, 68 -> 11
     x = torch.stack([data[i : i+block_size] for i in idx])
     y = torch.stack([data[i+1 : i+block_size+1] for i in idx])
+    x, y = x.to(device), y.to(device) # move tensors to GPU if available
     return x, y
 
 @torch.no_grad() # PyTorch avoids computing/tracking gradient for efficiency, this is purely for logging purposes
