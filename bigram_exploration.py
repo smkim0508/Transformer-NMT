@@ -1,8 +1,8 @@
 # exploring bigram model, tensors, chunking, etc.
-
 import torch
 import torch.nn as nn
 from torch.nn import functional as F
+from models.bigram import BigramLanguageModel
 
 # load in the dataset
 # NOTE: the current test input is derived from my README in another project
@@ -81,3 +81,11 @@ for b in range(batch_size): # batch dim
         context = xb[b, :t+1]
         target = yb[b, t]
         print(f"when input is {context}, target is: {target}")
+
+# test the bigram model
+model = BigramLanguageModel(vocab_size=vocab_size)
+logits, loss = model(xb, yb) # TODO: verify how this refers to forward()
+print(logits.shape) # we expect the shape to be (block_size * batch_size, vocab_size), since we stretched the dimensions in model definition
+print(loss)
+# NOTE: the CE loss expected without any training is -ln(1/vocab_size) = -ln(1/81) ~ 4.394
+# TODO: verify the above statement and reason the discrepency in actual loss
