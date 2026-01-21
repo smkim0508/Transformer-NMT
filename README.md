@@ -1,11 +1,17 @@
 # Transformer-NMT
-Refining my PyTorch skills to build models from scratch [2] - Re-creating Transformer-based Neural Machine Translation model with NLTK library.
+Refining my PyTorch skills to build models from scratch [2] - Creating various Transformer-based models:
+1. Neural Machine Translation
+2. Bigram Language Model (character unit)
+3. GPT Language Model (character unit)
+4. Refined GPT Language Model (token unit)
+
 *This README will also contain my personal notes as I review key concepts and practice with examples.*
 - This project is also to be used as custom tutoring material in the future
 NOTE: The NMT is built, trained, and evaluated using Google Colab's cloud resources. It's architecture and comments are documented on a Jupyter/Python notebook: `transformer_nmt.ipynb`.
 
 ## NOTES:
 ### NLTK Library
+- As a baseline for working with and building language models, I explore the NLTK library to grasp tokenization practices.
 - Allows conveinent, easy parsing of natural language data, used for various NLP tasks and applied models like LLMs.
 - Commonly use `punkt`: pretrained, unsupervised model to parse text into tokens based on heuristics.
     - Other tokenizer models can be accessed via the nltk library as well.
@@ -31,6 +37,8 @@ NOTE: The NMT is built, trained, and evaluated using Google Colab's cloud resour
     - Likewise, take `synset.antonyms()` if exists to collect all antonyms.
 
 ### TODO:
+- bigram model
+- GPT model
 - NMT re-creation
 
 ### Acknowledgements:
