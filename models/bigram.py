@@ -60,8 +60,10 @@ def get_batch(split):
     idx = torch.randint(high = len(data) - block_size, size = (batch_size,)) # sets output tensor to be batch_size
     print(f"random idx chosen: {idx}")
     # sets the sample context and targets
-    x = torch.stack([data[i: i+block_size] for i in idx])
-    y = torch.stack([data[i+1: i+block_size+1] for i in idx])
+    # NOTE: the ith target in one batch of y tensor is the correct prediction for the accumulation of 0 to ith items in the corresponding batch of x tensor.
+    # e.g. 3rd tagret in 1st batch of y: 11, which is the expected next char given 0-2 chars in 1st batch of x: 69, 75, 68 -> 11
+    x = torch.stack([data[i : i+block_size] for i in idx])
+    y = torch.stack([data[i+1 : i+block_size+1] for i in idx])
     return x, y
 
 # view outputs
@@ -72,3 +74,11 @@ print(xb)
 print('targets:')
 print(yb.shape)
 print(yb)
+
+# now we can observe the previous input-target relationship but for the entire batch
+for b in range(batch_size): # batch dim
+    for t in range(block_size): # time dim, aka the passage of diff chars in context
+        # NOTE: for each batch, we can take upto ith in x's context = ith target in y
+        context = xb[b, :t+1]
+        target = yb[b, t]
+        print(f"when input is {context}, target is: {target}")
