@@ -84,8 +84,15 @@ for b in range(batch_size): # batch dim
 
 # test the bigram model
 model = BigramLanguageModel(vocab_size=vocab_size)
+# pass xb as idx, xy as target
 logits, loss = model(xb, yb) # TODO: verify how this refers to forward()
 print(logits.shape) # we expect the shape to be (block_size * batch_size, vocab_size), since we stretched the dimensions in model definition
 print(loss)
 # NOTE: the CE loss expected without any training is -ln(1/vocab_size) = -ln(1/81) ~ 4.394
 # TODO: verify the above statement and reason the discrepency in actual loss
+
+# now experiment w/ token generation
+idx = torch.zeros((1,1), dtype=torch.long) # test with a 1x1 tensor holding 0, to represent idx being 0 (the first item in Vocab)
+# TODO: verify how idx being 1x1 tensor fits in to the above logic
+# NOTE: take the 0th idx to fetch first batch of results, and convert to simple python list (from tensor) to feed into decoder
+print(f"random tokens generated: {decode(model.generate(idx, max_new_tokens=100)[0].tolist())}") # the output here is expected to be non-sensical
