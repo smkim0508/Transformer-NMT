@@ -3,6 +3,7 @@ import torch
 import torch.nn as nn
 from torch.nn import functional as F
 from models.bigram import BigramLanguageModel
+from tqdm import tqdm
 
 # load in the dataset
 # NOTE: the current test input is derived from my README in another project
@@ -50,14 +51,15 @@ torch.manual_seed(1337) # for reproducibility, remove for truly random
 batch_size = 4
 block_size = 8 # NOTE: set again for testing purposes
 
-def get_batch(split):
+def get_batch(split, batch_size, block_size):
     """
     batches random chunks of data from train/val data
     """
     # generate a small batch of data of inputs x and targets y
     data = train_data if split == "train" else val_data
     idx = torch.randint(high = len(data) - block_size, size = (batch_size,)) # sets output tensor to be batch_size
-    print(f"random idx chosen: {idx}")
+    # print(f"random idx chosen: {idx}")
+
     # sets the sample context and targets
     # NOTE: the ith target in one batch of y tensor is the correct prediction for the accumulation of 0 to ith items in the corresponding batch of x tensor.
     # e.g. 3rd tagret in 1st batch of y: 11, which is the expected next char given 0-2 chars in 1st batch of x: 69, 75, 68 -> 11
@@ -66,7 +68,7 @@ def get_batch(split):
     return x, y
 
 # view outputs
-xb, yb = get_batch('train')
+xb, yb = get_batch('train', batch_size=batch_size, block_size=block_size)
 print('inputs:')
 print(xb.shape)
 print(xb)
@@ -96,3 +98,28 @@ idx = torch.zeros((1,1), dtype=torch.long) # test with a 1x1 tensor holding 0, t
 # TODO: verify how idx being 1x1 tensor fits in to the above logic
 # NOTE: take the 0th idx to fetch first batch of results, and convert to simple python list (from tensor) to feed into decoder
 print(f"random tokens generated: {decode(model.generate(idx, max_new_tokens=100)[0].tolist())}") # the output here is expected to be non-sensical
+
+# now we can experiment w/ training to see the difference
+
+# optimizer set to Adam
+optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3) # TODO: diff between Adam and AdamW?
+
+# train w/ larger batch size
+batch_size = 32
+steps = 10000
+for step in tqdm(range(steps)):
+    # sample a batch of data
+    xb, yb = get_batch('train', batch_size=batch_size, block_size=block_size)
+    # eval loss
+    logits, loss = model.forward(xb, yb)
+    if not loss:
+        print(f"Error: loss must exist, please verify target is set")
+        break
+    optimizer.zero_grad(set_to_none=True)
+    loss.backward()
+    optimizer.step()
+
+print(f"loss after {steps} steps: {loss.item() if loss else None}")
+# now try to generate randomly again to compare differences
+# NOTE: the output here should still be non-sensical but more "structured" than previous
+print(f"tokens generated after preliminary training: {decode(model.generate(idx, max_new_tokens=200)[0].tolist())}")
