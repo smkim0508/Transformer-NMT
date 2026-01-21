@@ -1,5 +1,4 @@
-# bigram language model, predicting the next character given a SINGLE character
-# begin with TinyShakespear Dataset
+# exploring bigram model, tensors, chunking, etc.
 
 import torch
 import torch.nn as nn
