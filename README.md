@@ -36,9 +36,20 @@ NOTE: The NMT is built, trained, and evaluated using Google Colab's cloud resour
     - Therefore, by collecting all lemmas for each synset of a given word (double loop), we can effectively collect all synonyms of a word, but this may contain duplicates.
     - Likewise, take `synset.antonyms()` if exists to collect all antonyms.
 
+### Generative Language Models
+- Overall the idea of language model is probabilistic prediction.
+    - For a bigram model, the next unit of language predicted (char/token/word) depends solely on the previous unit. In other words, it's context size is 1 unit.
+    - For a GPT-like language model, the context size is larger, usually referred to a "block" of text being the input for next unit prediction.
+- The prediction happens on an encoded version of the Vocabulary (all possible unit of language supported by model)
+    - Simple encoder-decoder would map 1-to-1 between language and numerical representation.
+    - Could have larger unit size with larger Vocab or smaller unit size with smaller Vocab
+        - In practice, unit is typically a couple chars (tokens, or sub-words), and Vocab is pretty large.
+42:20
+
 ### TODO:
 - bigram model
 - GPT model
+    - refine w/ tokenization, additional layers, and larger language context (OpenWebText)
 - NMT re-creation
 
 ### Acknowledgements:
