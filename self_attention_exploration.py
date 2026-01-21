@@ -25,5 +25,17 @@ for b in range(B):
         # NOTE: bag-of-words for batch b and time t = average channel vals across past times -> xbow[b, t] = C 1-dim vector
         xbow[b, t] = torch.mean(xprev, 0) # takes the average of previous channels
 
+# NOTE: we should expect ith time idx of xbow[0] to be the average of 0 to ith time idx of x[0]
 print(f"original x[0]:\n{x[0]}")
 print(f"bow average x[0]:\n{xbow[0]}")
+
+# using a mathematical trick, we can try to be very EFFICIENT with this average computation, instead of nested loops
+# NOTE: with the use of lower-half triangular matrix of normalized row sum to 1, matrix multiplication produces a running average
+# see example below for clarity
+a = torch.tril(torch.ones(3, 3))
+a = a / torch.sum(a, 1, keepdim=True) # dividng by sum across dim 1 gives each row normalized to 1
+b = torch.randint(low=0, high=10, size=(3, 2)).float()
+c = a @ b # matrix multiply
+print(f"a:\n{a}")
+print(f"b:\n{b}")
+print(f"c:\n{c}")
