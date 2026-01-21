@@ -1,4 +1,4 @@
-# Transformer-NMT
+# Transformer-NMT/GPT
 Refining my PyTorch skills to build models from scratch [2] - Creating various Transformer-based models:
 1. Neural Machine Translation
 2. Bigram Language Model (character unit)
@@ -46,8 +46,8 @@ NOTE: The NMT is built, trained, and evaluated using Google Colab's cloud resour
     - Could have larger unit size with larger Vocab and smaller encoding length or smaller unit size with smaller Vocab and larger encoding length
         - In practice, unit is typically a couple chars (tokens, or sub-words), and Vocab is pretty large.
 - When training transformers, we typically only train w/ chunks of data sampled from the train data, not the entire text. The block_size here becomes the context size.
-- 
-42:20
+- In general, it's a good practice to evaluate the average loss in the middle of training
+- During forward pass, we can use Embeddings table to compute logits, which is compared w/ targets to find CE loss.
 
 ### TODO:
 - bigram model
