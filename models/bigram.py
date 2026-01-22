@@ -31,15 +31,16 @@ class BigramLanguageModel(nn.Module):
         # each token directly reads off the logits for next token from look up table
         self.token_embeddings_table = nn.Embedding(vocab_size, n_embed) # semantic embedding
         self.position_embedding_table = nn.Embedding(block_size, n_embed) # positional embedding
-        # language model linear layer
-        self.lm_head = nn.Linear(n_embed, vocab_size)
         # NOTE: transformer blocks hold sa heads and ff layer
         # TODO: sequential vs modulelist
         self.blocks = nn.Sequential(
             Block(n_embed=n_embed, n_head=4, block_size=block_size),
             Block(n_embed=n_embed, n_head=4, block_size=block_size),
-            Block(n_embed=n_embed, n_head=4, block_size=block_size)
+            Block(n_embed=n_embed, n_head=4, block_size=block_size),
+            nn.LayerNorm(n_embed)
         )
+        # language model linear layer
+        self.lm_head = nn.Linear(n_embed, vocab_size)
 
         # the below layers are now part of the transformer, not necessary
         # self-attention head layer (multi-headed)

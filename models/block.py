@@ -18,9 +18,13 @@ class Block(nn.Module):
         head_size = n_embed // n_head # dimensionality of each head
         self.sa = MultiHeadAttention(n_heads=n_head, head_size=head_size, n_embed=n_embed, block_size=block_size)
         self.ff = FeedForward(n_embed)
+        # layer normalizations
+        self.ln1 = nn.LayerNorm(n_embed) # TODO: why n_embed?
+        self.ln2 = nn.LayerNorm(n_embed)
         
     def forward(self, x):
         # NOTE: enables residual pathway via addition
-        x = x + self.sa(x) # original x addition is the residual path
-        x = x + self.ff(x)
+        # layer normalization occurs BEFORE transformation (attention or feedforward)
+        x = x + self.sa(self.ln1(x)) # original x addition is the residual path
+        x = x + self.ff(self.ln2(x))
         return x
