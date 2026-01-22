@@ -49,11 +49,22 @@ NOTE: The NMT is built, trained, and evaluated using Google Colab's cloud resour
 - In general, it's a good practice to evaluate the average loss in the middle of training
 - During forward pass, we can use Embeddings table to compute logits, which is compared w/ targets to find CE loss.
 
+### Self-Attention Mechanism
+- The core logic originally described by the "Attention is All You Need" Paper and adopted into GPT models.
+- Given a 3 dimensional Tensor B, T, C (batch, time, channel), and time represents the sequence of tokens in chronological order, we want the token information (channels) at time idx i to communicate with past tokens within the context window.
+    - One of the easiest ways to achieve this is via a simple sum or average, and representing the current time idx's channels as the sum/averaged feature value. However, this is extremely naive and loss-y for crucial data like spatial arrangement/order.
+        - Similar to pre-fix sums.
+- Ultimately, however, we don't want a uniform distribution among weights; instead, we want to be able to represent a data-dependent weight (different tokens take different levels of interest to other tokens).
+    - Self-attention solves this via having each tokens emit a KEY and a QUERY value. By taking a dot product, if a key and query has high affinity for each other, there will be stronger value extracted.
+        - Each key also holds a unique value for the token.
+    - We initially define key, query, value via linear layers, and by having weight be defined as matrix multiplication of query and key's transpose, the resulting weight matrix holds the dot product of token i's query vector with token j's key vector at weight(i, j). This represents how much each token's query attends to another's key.
+- PyTorch's matmultiplication (@) operation automatically takes the last 2 dimensions as matrix dims and any leading dims as the batching dimensions, auto-broadcasting if needed.
 ### TODO:
 - bigram model
 - GPT model
     - refine w/ tokenization, additional layers, and larger language context (OpenWebText)
 - NMT re-creation
+- broadcasting pytorch
 
 ### Acknowledgements:
 NLTK exploration referenced the [Official NLTK Documentation](https://www.nltk.org/) and the following [YouTube tutorial](https://www.youtube.com/@ProgrammingKnowledge) with self-learning and modifications.
