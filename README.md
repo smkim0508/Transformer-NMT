@@ -60,6 +60,11 @@ NOTE: The NMT is built, trained, and evaluated using Google Colab's cloud resour
     - We initially define key, query, value via linear layers, and by having weight be defined as matrix multiplication of query and key's transpose, the resulting weight matrix holds the dot product of token i's query vector with token j's key vector at weight(i, j). This represents how much each token's query attends to another's key.
         - High dot product in the weight matrix for (i, j) represents high attention between token i's query and token j's key.
 - By using value projection (another lin. layer to process x -> v), we achieve flexibility in representing the token beyond its raw form, and allow us to manipulate the dimension freely.
+- Attention, at core, is a communication mechanism between ANY directed graph structure. In auto-regressive language model, it typically becomes directed w.r.t. time (past tokens point to current), but this can be generalized. (To achieve this, simply remove triangular backfill -inf, which allows all nodes to communicate w/ each other).
+- Attention mechanism by itself has no notion of space/position, it only holds relationship between tokens (nodes). Hence, to acheive positional data, we need to positionally encode tokens.
+- Self-attention is a special case of attention where key, query, value results from the same source. In a more general setting like a generic encoder-decoder architecture, encoder may pool from a separate source that we want to condition on.
+- In the original attention paper, the attention matrix is defined as Softmax((Q@K_T)/sqrt(head_size))@V, where dividing by sqrt(head_size) ensures that the variance of weight (the arg. to softmax) will be within unit Gaussian (1), not head_size.
+    - This is crucial because if there are extremes in weight, softmax will converge towards a single high value and leave the rest near 0, which is undesirable (signifies only a single other node is important to any given node)
 - PyTorch's matmultiplication (@) operation automatically takes the last 2 dimensions as matrix dims and any leading dims as the batching dimensions, auto-broadcasting if needed.
 ### TODO:
 - bigram model
