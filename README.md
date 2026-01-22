@@ -81,11 +81,21 @@ NOTE: The NMT is built, trained, and evaluated using Google Colab's cloud resour
         - TODO: batch norm vs layer norm?
 - To prevent overfitting, dropout layers can be added during every forward/backward pass, as found by "Dropout: A Simple Way to Prevent Neural Networks from Overfitting".
     - This randomly shuts off connection between different nodes in the neural net as a regularization technique.
+### Encoder-Decoder Architecture and Cross-Attention Mechanism
+<img src="figures/transformer_architecture_attention.png" alt="transformer-architecture" width="300" height="400">
+
+- The original attention paper's architecture, as shown above, highlights both an encoder AND a decoder.
+    - This is because the original paper was focused on NMT, so encoder took the entire foreign language as input and decoded into a second target language.
+    - As part of this, the outputs of encoder leeches onto the decoder via cross-attention layer, which effectively allows decoder to communicate with past tokens AND the entire context of foreign text.
+- The GPT-like language model created here ONLY has a decoder part.
+    - Decoder is characterized by the lower triangular matrix blocking communication with future tokens.
+    - The absence of encoder is because whole context shouldn't be considered, and generation only depends on creating new, high-probability tokens (sort of spitting tokens that should fit without any grounding like NMT)
+    - This also leads to absence of cross-attention layer in this GPT model. 
 
 ### TODO:
-- bigram model
 - GPT model
     - refine w/ tokenization, additional layers, and larger language context (OpenWebText)
+- figure for GPT-like decoder architecture
 - NMT re-creation
 - broadcasting pytorch
 
@@ -93,3 +103,5 @@ NOTE: The NMT is built, trained, and evaluated using Google Colab's cloud resour
 NLTK exploration referenced the [Official NLTK Documentation](https://www.nltk.org/) and the following [YouTube tutorial](https://www.youtube.com/@ProgrammingKnowledge) with self-learning and modifications.
 
 The seq2seq Transformer NMT creation follows public material from Princeton University's NLP course, COS484. This material has been modified for personal learning purposes and (will be) extended in self-guided exploration of the model.
+
+The GPT-like Transformer Language Model was created with reference to ["Attention is All You Need"](https://arxiv.org/pdf/1706.03762) by Vaswani et. al.
