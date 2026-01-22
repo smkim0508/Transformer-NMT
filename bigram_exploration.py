@@ -10,6 +10,9 @@ from tqdm import tqdm
 with open("data/test_input.txt", 'r', encoding="utf-8") as t:
     text = t.read()
 
+# set device to CPU strictly for exploration, needed for bigram model
+device = "cpu"
+
 # find the unique chars occuring in the data, to define Vocabulary
 chars = sorted(list(set(text)))
 vocab_size = len(chars)
@@ -86,7 +89,12 @@ for b in range(batch_size): # batch dim
         print(f"when input is {context}, target is: {target}")
 
 # test the bigram model
-model = BigramLanguageModel(vocab_size=vocab_size, n_embed=n_embed)
+model = BigramLanguageModel(
+    vocab_size=vocab_size,
+    n_embed=n_embed,
+    block_size=block_size,
+    device=device
+)
 # pass xb as idx, xy as target
 logits, loss = model(xb, yb) # TODO: verify how this refers to forward()
 print(logits.shape) # we expect the shape to be (block_size * batch_size, vocab_size), since we stretched the dimensions in model definition

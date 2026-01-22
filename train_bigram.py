@@ -85,7 +85,12 @@ def estimate_loss(model):
 if __name__ == "__main__":
     print(f"Initializing model...")
     # actual training loop defined here
-    model = BigramLanguageModel(vocab_size=vocab_size, n_embed=n_embed)
+    model = BigramLanguageModel(
+        vocab_size=vocab_size,
+        n_embed=n_embed,
+        block_size=block_size,
+        device=device
+    )
     m = model.to(device) # use GPU if available
     print(f"Model initialized on {device}!")
 
