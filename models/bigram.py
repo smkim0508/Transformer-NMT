@@ -4,6 +4,9 @@ import torch
 import torch.nn as nn
 from torch.nn import functional as F
 
+# self-attention head
+from models.self_attention import Head
+
 # set manual seed
 torch.manual_seed(1337)
 
@@ -12,7 +15,7 @@ class BigramLanguageModel(nn.Module):
     Base class for bigram language model.
     """
 
-    def __init__(self, vocab_size, n_embed, block_size, device):
+    def __init__(self, vocab_size, n_embed, block_size, head_size, device):
         """
         Components of this model.
         Sets up a token embedding table that is NxN where N = vocab size.
@@ -24,7 +27,10 @@ class BigramLanguageModel(nn.Module):
         # each token directly reads off the logits for next token from look up table
         self.token_embeddings_table = nn.Embedding(vocab_size, n_embed) # semantic embedding
         self.position_embedding_table = nn.Embedding(block_size, n_embed) # positional embedding
-        self.lm_head = nn.Linear(n_embed, vocab_size) # output layer
+        # language model linear layer
+        self.lm_head = nn.Linear(n_embed, vocab_size)
+        # self-attention head layer
+        self.sa_head = Head(n_embed, head_size, block_size)
         self.device = device
 
     def forward(self, idx, targets = None):
@@ -40,6 +46,7 @@ class BigramLanguageModel(nn.Module):
         token_embeddings = self.token_embeddings_table(idx) # (B, T, n_embed)
         positional_embeddings = self.position_embedding_table(torch.arange(T, device=self.device)) # (T, n_embed)
         x = token_embeddings + positional_embeddings # (B, T, n_embed) NOTE: positional embeddings are broadcasted
+        x = self.sa_head(x) # apply one head of self-attention (B, T, head_size)
         logits = self.lm_head(x) # (B, T, vocab_size)
 
         if targets is None:

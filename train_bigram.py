@@ -19,6 +19,7 @@ learning_rate = 1e-2
 device = "cuda" if torch.cuda.is_available() else "cpu" # use GPU if available TODO: does tensor.to(device) not affect for CPU?
 eval_iters = 200
 n_embed = 32 # dims for token embeddings
+head_size = n_embed # for now, head_size == n_embed
 
 torch.manual_seed(1337) # for reproducibility
 
@@ -89,6 +90,7 @@ if __name__ == "__main__":
         vocab_size=vocab_size,
         n_embed=n_embed,
         block_size=block_size,
+        head_size=head_size,
         device=device
     )
     m = model.to(device) # use GPU if available
