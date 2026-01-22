@@ -91,6 +91,13 @@ NOTE: The NMT is built, trained, and evaluated using Google Colab's cloud resour
     - Decoder is characterized by the lower triangular matrix blocking communication with future tokens.
     - The absence of encoder is because whole context shouldn't be considered, and generation only depends on creating new, high-probability tokens (sort of spitting tokens that should fit without any grounding like NMT)
     - This also leads to absence of cross-attention layer in this GPT model. 
+### Scaling Decoder into AI Assistant (e.g. ChatGPT)
+- The decoder model created here is similar to the pre-training stage of GPT models.
+    - The model architecture is nearly identical, but GPT has million-fold larger training data (a good chunk of internet vs tiny dataset here), and much larger parameter size (and other hyperparameters associated).
+    - The output of this pre-training is a document-completer, not a helpful assistant.
+- This model then undergoes fine-tuning to perform explicitly assistant-like behaviors, training on curated set of Q&A-like data.
+- A human labeler helps to identify while style of prompt-response pair is best, and this information is used to perform policy optimization (PPO).
+    - This part of the process is less readily available open-source.
 
 ### TODO:
 - GPT model
