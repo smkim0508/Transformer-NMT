@@ -52,8 +52,32 @@ print(f"is xbow and xbow2 identical? {torch.allclose(xbow, xbow2)}") # this comp
 # approach 2) back-filling the weight matrix w/ masked_fill() and softmax()
 tril = torch.tril(torch.ones(T, T)) # create a lower triangular matrix
 w2 = torch.zeros((T, T))
-w2 = w2.masked_fill(tril == 0, float('-inf')) # find where values are 0, replace with -inf
+w2 = w2.masked_fill(tril == 0, float('-inf')) # find where values are 0 for lower triangular, replace with -inf
+# NOTE: exponentiation of 0 is 1, and exponentiation of -inf is 0 -> leaves us with the same effect as starting w/ lower triangular 1's and normalizing.
 w2 = F.softmax(w2, dim=1) # by taking softmax, we are calculating the same normalized row values (via exponentiating and normalizing each row)
 xbow3 = w2 @ x # we should expect the same output
 print(f"is xbow and xbow3 identical? {torch.allclose(xbow, xbow3)}")
 # NOTE: we actually prefer approach 2 because it simulates self-attention more accurately: by back-filling -inf values with a seed, the model is holding attention to past tokens and interacting in different weights.
+
+# now onto self-attention mechanism with single head
+B,T,C = 4, 8, 32 # batch, time, channels
+x = torch.randn(B,T,C)
+head_size = 16 # the dimensions of the Query, Key, Value vectors
+# NOTE: for now, the key, query, values are independent of each other when C is passed through
+key = nn.Linear(C, head_size, bias=False)
+query = nn.Linear(C, head_size, bias=False)
+value = nn.Linear(C, head_size, bias=False)
+k = key(x) # (B, T, head_size)
+q = query(x) # (B, T, head_size)
+v = value(x) # (B, T, head_size)
+# NOTE: by taking the mat. mul. of key and query we define weight to have dot product of token i's key and token j's query at position (i, j)
+weight = q @ k.transpose(-2, -1) # (B, T, head_size) @ (B, head_size, T) -> (B, T, T), NOTE: the batch size stays constant while T, H dims are transposed to MM
+
+# take the weight and mask with lower triangular matrix to "eliminate" attention to future tokens
+tril = torch.tril(torch.ones(T,T))
+# NOTE: instead of torch.zeros init, we keep the weight matrix and backfill the upper half with -inf and softmax.
+weight = weight.masked_fill(tril == 0, float('-inf'))
+weight = F.softmax(weight, dim=1)
+# instead of multiplying w/ x, we do mat.mul. with value
+out = weight @ v # (B, T, T) @ (B, T, head_size) -> (B, T, head_size)
+print(f"self-attention out shape: {out.shape}\n{out}")
