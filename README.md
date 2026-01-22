@@ -111,4 +111,4 @@ NLTK exploration referenced the [Official NLTK Documentation](https://www.nltk.o
 
 The seq2seq Transformer NMT creation follows public material from Princeton University's NLP course, COS484. This material has been modified for personal learning purposes and (will be) extended in self-guided exploration of the model.
 
-The GPT-like Transformer Language Model was created with reference to ["Attention is All You Need"](https://arxiv.org/pdf/1706.03762) by Vaswani et. al. and reference to Andrej Karpathy's [YouTube Tutorial](https://www.youtube.com/watch?v=kCc8FmEb1nY).
+The GPT-like Transformer Language Model was created with reference to ["Attention is All You Need"](https://arxiv.org/pdf/1706.03762) by Vaswani et. al. and Andrej Karpathy's [YouTube Tutorial](https://www.youtube.com/watch?v=kCc8FmEb1nY).
