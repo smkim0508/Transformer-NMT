@@ -71,7 +71,9 @@ k = key(x) # (B, T, head_size)
 q = query(x) # (B, T, head_size)
 v = value(x) # (B, T, head_size)
 # NOTE: by taking the mat. mul. of key and query we define weight to have dot product of token i's key and token j's query at position (i, j)
-weight = q @ k.transpose(-2, -1) # (B, T, head_size) @ (B, head_size, T) -> (B, T, T), NOTE: the batch size stays constant while T, H dims are transposed to MM
+weight = q @ k.transpose(-2, -1) * head_size**-0.5 # (B, T, head_size) @ (B, head_size, T) -> (B, T, T), NOTE: the batch size stays constant while T, H dims are transposed to MM
+# we also divide by sqrt(head_size) to normalize the variance
+print(f"self-attention weight variance: {weight.var()}")
 
 # take the weight and mask with lower triangular matrix to "eliminate" attention to future tokens
 tril = torch.tril(torch.ones(T,T))
@@ -79,5 +81,6 @@ tril = torch.tril(torch.ones(T,T))
 weight = weight.masked_fill(tril == 0, float('-inf'))
 weight = F.softmax(weight, dim=1)
 # instead of taking the raw token x, we do mat. mul. with value to allow flexibility
+# NOTE: the output[b, t, :] is the context-aware representation for token t in batch b, where weight's distribution contributes to the output
 out = weight @ v # (B, T, T) @ (B, T, head_size) -> (B, T, head_size)
-print(f"self-attention out shape: {out.shape}\n{out}")
+print(f"self-attention out shape: {out.shape}\nExample (B=0, T=0):\n{out[0][0]}")
