@@ -3,6 +3,7 @@ import torch
 import torch.nn as nn
 from torch.nn import functional as F
 from models.bigram import BigramLanguageModel
+from models.transformer import TransformerLanguageModel
 from tqdm import tqdm
 
 # load in the dataset
@@ -89,15 +90,7 @@ for b in range(batch_size): # batch dim
         print(f"when input is {context}, target is: {target}")
 
 # test the bigram model
-model = BigramLanguageModel(
-    vocab_size=vocab_size,
-    n_embed=n_embed,
-    block_size=block_size,
-    n_head=4,
-    n_layer=4,
-    dropout=0.2,
-    device=device
-)
+model = BigramLanguageModel(vocab_size=vocab_size)
 # pass xb as idx, xy as target
 logits, loss = model(xb, yb) # TODO: verify how this refers to forward()
 print(logits.shape) # we expect the shape to be (block_size * batch_size, vocab_size), since we stretched the dimensions in model definition
