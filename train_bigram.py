@@ -13,9 +13,9 @@ from models.bigram import BigramLanguageModel
 # hyperparameters
 batch_size = 32
 block_size = 8
-max_iters = 3000
+max_iters = 5000
 eval_interval = 300 # used for averaging loss during train
-learning_rate = 1e-2
+learning_rate = 1e-3
 device = "cuda" if torch.cuda.is_available() else "cpu" # use GPU if available TODO: does tensor.to(device) not affect for CPU?
 eval_iters = 200
 n_embed = 32 # dims for token embeddings
@@ -24,8 +24,9 @@ head_size = n_embed # for now, head_size == n_embed
 torch.manual_seed(1337) # for reproducibility
 
 # load in the dataset
+data_path = "data/input.txt"
 # NOTE: the current test input is derived from my README in another project
-with open("data/test_input.txt", 'r', encoding="utf-8") as t:
+with open(data_path, 'r', encoding="utf-8") as t:
     text = t.read()
 
 # find the unique chars occuring in the data, to define Vocabulary
