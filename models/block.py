@@ -20,6 +20,7 @@ class Block(nn.Module):
         self.ff = FeedForward(n_embed)
         
     def forward(self, x):
-        x = self.sa(x)
-        x = self.ff(x)
+        # NOTE: enables residual pathway via addition
+        x = x + self.sa(x) # original x addition is the residual path
+        x = x + self.ff(x)
         return x

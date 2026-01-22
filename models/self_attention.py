@@ -43,8 +43,10 @@ class MultiHeadAttention(nn.Module):
             head_size=head_size,
             block_size=block_size
         ) for _ in range(n_heads)])
+        self.proj = nn.Linear(n_embed, n_embed) # projection layer takes processed input back to the residual pathway
 
     def forward(self, x):
         # TODO: what exactly does .cat() operation do to dimensionality?
         out = torch.cat([head(x) for head in self.heads], dim=-1)
+        out = self.proj(out)
         return out
