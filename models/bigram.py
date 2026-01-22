@@ -6,6 +6,8 @@ from torch.nn import functional as F
 
 # self-attention head
 from models.self_attention import Head, MultiHeadAttention
+# feed-forward layer
+from models.feed_forward import FeedForward
 
 # set manual seed
 torch.manual_seed(1337)
@@ -32,8 +34,9 @@ class BigramLanguageModel(nn.Module):
         # self-attention head layer (multi-headed)
         # NOTE: head_size is reduced by factor of n_heads to account for concat -> output is still head_size
         self.sa_heads = MultiHeadAttention(4, head_size//4, n_embed, block_size)
-        # self.sa_head = Head(n_embed, head_size, block_size)
-        self.device = device 
+        # feed forward layer
+        self.ff_layer = FeedForward(n_embed)
+        self.device = device
         self.block_size = block_size
 
     def forward(self, idx, targets = None):
@@ -50,7 +53,8 @@ class BigramLanguageModel(nn.Module):
         positional_embeddings = self.position_embedding_table(torch.arange(T, device=self.device)) # (T, n_embed)
         x = token_embeddings + positional_embeddings # (B, T, n_embed) NOTE: positional embeddings are broadcasted
         x = self.sa_heads(x) # apply layer of multi-headed self-attention (B, T, head_size)
-        logits = self.lm_head(x) # (B, T, vocab_size)
+        x = self.ff_layer(x) # (B, T, n_embed)
+        logits = self.lm_head(x) # (B, T, vocab_size) NOTE: this layer expects n_embed as input
 
         if targets is None:
             loss = None
