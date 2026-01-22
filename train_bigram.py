@@ -11,18 +11,19 @@ from tqdm import tqdm
 from models.bigram import BigramLanguageModel
 
 # hyperparameters
-batch_size = 32
-block_size = 8
+batch_size = 64 # number of independent sequences in parallel
+block_size = 256 # max context window size for prediction
 max_iters = 5000
-eval_interval = 300 # used for averaging loss during train
-learning_rate = 1e-3
+eval_interval = 500 # used to average loss during train for logging
+learning_rate = 3e-4 # TODO: when to increase/decay lr?
 device = "cuda" if torch.cuda.is_available() else "cpu" # use GPU if available TODO: does tensor.to(device) not affect for CPU?
 eval_iters = 200
-n_embed = 32 # dims for token embeddings
+n_embed = 384 # dims for token embeddings
 head_size = n_embed # for now, head_size == n_embed
-n_head = 4 # number of heads in multi-head attention
-n_layer = 4 # number of transformer blocks
-dropout = 0.2
+n_head = 6 # number of heads in multi-head attention
+n_layer = 6 # number of transformer blocks
+dropout = 0.2 # 20% of intermediate nodes are disabled at random
+# NOTE: implies head_size = n_embed//n_head = 384//6 = 64
 
 torch.manual_seed(1337) # for reproducibility
 
