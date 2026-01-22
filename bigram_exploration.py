@@ -13,6 +13,7 @@ with open("data/test_input.txt", 'r', encoding="utf-8") as t:
 # find the unique chars occuring in the data, to define Vocabulary
 chars = sorted(list(set(text)))
 vocab_size = len(chars)
+n_embed = 32
 print(f"Vocab size: {len(chars)}, Vocab: {''.join(chars)}")
 
 # define simple encoder-decoder to map Vocab
@@ -85,7 +86,7 @@ for b in range(batch_size): # batch dim
         print(f"when input is {context}, target is: {target}")
 
 # test the bigram model
-model = BigramLanguageModel(vocab_size=vocab_size)
+model = BigramLanguageModel(vocab_size=vocab_size, n_embed=n_embed)
 # pass xb as idx, xy as target
 logits, loss = model(xb, yb) # TODO: verify how this refers to forward()
 print(logits.shape) # we expect the shape to be (block_size * batch_size, vocab_size), since we stretched the dimensions in model definition

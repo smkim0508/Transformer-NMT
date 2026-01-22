@@ -18,6 +18,7 @@ eval_interval = 300 # used for averaging loss during train
 learning_rate = 1e-2
 device = "cuda" if torch.cuda.is_available() else "cpu" # use GPU if available TODO: does tensor.to(device) not affect for CPU?
 eval_iters = 200
+n_embed = 32 # dims for token embeddings
 
 torch.manual_seed(1337) # for reproducibility
 
@@ -84,7 +85,7 @@ def estimate_loss(model):
 if __name__ == "__main__":
     print(f"Initializing model...")
     # actual training loop defined here
-    model = BigramLanguageModel(vocab_size=vocab_size)
+    model = BigramLanguageModel(vocab_size=vocab_size, n_embed=n_embed)
     m = model.to(device) # use GPU if available
     print(f"Model initialized on {device}!")
 

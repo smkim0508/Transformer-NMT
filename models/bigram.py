@@ -12,15 +12,17 @@ class BigramLanguageModel(nn.Module):
     Base class for bigram language model.
     """
 
-    def __init__(self, vocab_size):
+    def __init__(self, vocab_size, n_embed):
         """
         Components of this model.
         Sets up a token embedding table that is NxN where N = vocab size.
             - For each item in Vocab, we have a unique embeddings map
+            - n_embed is the dimensionality of the embedding
         """
         super(BigramLanguageModel, self).__init__()
         # each token directly reads off the logits for next token from look up table
-        self.token_embeddings_table = nn.Embedding(vocab_size, vocab_size)
+        self.token_embeddings_table = nn.Embedding(vocab_size, n_embed)
+        self.lm_head = nn.Linear(n_embed, vocab_size) # output layer
 
     def forward(self, idx, targets = None):
         """
@@ -30,7 +32,8 @@ class BigramLanguageModel(nn.Module):
         Target is optional when we want to generate from model -> in this case, loss is None.
         """
         # idx and targets -> (B,T) tensor of integers
-        logits = self.token_embeddings_table(idx) # (B,T,C)
+        token_embeddings = self.token_embeddings_table(idx) # (B, T, n_embed)
+        logits = self.lm_head(token_embeddings) # (B, T, vocab_size)
 
         if targets is None:
             loss = None
