@@ -29,3 +29,22 @@ class Head(nn.Module):
         v = self.value(x) # (B, T, C)
         out = weight @ v # (B, T, T) @ (B, T, C) -> (B, T, C)
         return out
+
+class MultiHeadAttention(nn.Module):
+    """
+    Multiple self-attention heads in parallel.
+    The results of parallel self-attention heads are concatenated on the Channel dim (-1).
+    """
+
+    def __init__(self, n_heads, head_size, n_embed, block_size):
+        super().__init__()
+        self.heads = nn.ModuleList([Head(
+            n_embed=n_embed,
+            head_size=head_size,
+            block_size=block_size
+        ) for _ in range(n_heads)])
+
+    def forward(self, x):
+        # TODO: what exactly does .cat() operation do to dimensionality?
+        out = torch.cat([head(x) for head in self.heads], dim=-1)
+        return out

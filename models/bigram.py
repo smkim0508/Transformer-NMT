@@ -5,7 +5,7 @@ import torch.nn as nn
 from torch.nn import functional as F
 
 # self-attention head
-from models.self_attention import Head
+from models.self_attention import Head, MultiHeadAttention
 
 # set manual seed
 torch.manual_seed(1337)
@@ -29,9 +29,11 @@ class BigramLanguageModel(nn.Module):
         self.position_embedding_table = nn.Embedding(block_size, n_embed) # positional embedding
         # language model linear layer
         self.lm_head = nn.Linear(n_embed, vocab_size)
-        # self-attention head layer
-        self.sa_head = Head(n_embed, head_size, block_size)
-        self.device = device
+        # self-attention head layer (multi-headed)
+        # NOTE: head_size is reduced by factor of n_heads to account for concat -> output is still head_size
+        self.sa_heads = MultiHeadAttention(4, head_size//4, n_embed, block_size)
+        # self.sa_head = Head(n_embed, head_size, block_size)
+        self.device = device 
         self.block_size = block_size
 
     def forward(self, idx, targets = None):
@@ -47,7 +49,7 @@ class BigramLanguageModel(nn.Module):
         token_embeddings = self.token_embeddings_table(idx) # (B, T, n_embed)
         positional_embeddings = self.position_embedding_table(torch.arange(T, device=self.device)) # (T, n_embed)
         x = token_embeddings + positional_embeddings # (B, T, n_embed) NOTE: positional embeddings are broadcasted
-        x = self.sa_head(x) # apply one head of self-attention (B, T, head_size)
+        x = self.sa_heads(x) # apply layer of multi-headed self-attention (B, T, head_size)
         logits = self.lm_head(x) # (B, T, vocab_size)
 
         if targets is None:
