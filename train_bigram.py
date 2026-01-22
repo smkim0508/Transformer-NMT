@@ -132,4 +132,26 @@ if __name__ == "__main__":
     
     # generate text from model
     context = torch.zeros((1,1), dtype=torch.long, device=device)
-    print(f"Generated text: {decode(m.generate(context, max_new_tokens=500)[0].tolist())}")
+    generated_text = decode(m.generate(context, max_new_tokens=500)[0].tolist())
+    print(f"Generated text:\n{generated_text}")
+
+    # save generated text to file
+    with open('outputs/generated_text.txt', 'w', encoding='utf-8') as f:
+        f.write(generated_text)
+    print("Generated text saved to outputs/generated_text.txt")
+
+    # save model checkpoint
+    checkpoint = {
+        'model_state_dict': m.state_dict(),
+        'optimizer_state_dict': optimizer.state_dict(),
+        'vocab_size': vocab_size,
+        'n_embed': n_embed,
+        'block_size': block_size,
+        'n_head': n_head,
+        'n_layer': n_layer,
+        'dropout': dropout,
+        'stoi': stoi,
+        'itos': itos,
+    }
+    torch.save(checkpoint, 'checkpoints/bigram_model.pt')
+    print("Model checkpoint saved to checkpoints/bigram_model.pt")
