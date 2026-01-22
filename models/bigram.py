@@ -32,6 +32,7 @@ class BigramLanguageModel(nn.Module):
         # self-attention head layer
         self.sa_head = Head(n_embed, head_size, block_size)
         self.device = device
+        self.block_size = block_size
 
     def forward(self, idx, targets = None):
         """
@@ -69,12 +70,16 @@ class BigramLanguageModel(nn.Module):
 
         The purpose is to take a current context of chars (idx) in shape (B,T) and extend to (B,T+1), (B,T+2), ...
         - continues until max_new_tokens reached
+
+        NOTE: Must ensure that idx does not exceed block_size due to positional embeddings.
         """
         # idx becomes the (B,T) array of indices in the current context
         # i.e. current context of characters in some batch
         for _ in range(max_new_tokens):
+            # crop idx to the last block_size tokens
+            idx_crop = idx[:, -self.block_size:]
             # first fetch predictions, loss is not used
-            logits, _ = self.forward(idx) # TODO: how could this reference target() w/ just self(idx)?
+            logits, _ = self.forward(idx_crop) # TODO: how could this reference target() w/ just self(idx)?
             # fetch only the last time step NOTE: this can be expanded to a more general history for increased context_size
             logits = logits[:, -1, :] # becomes (B,C) -> TODO: what about previously?
             # apply softmax for probabilities
