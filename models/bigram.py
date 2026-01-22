@@ -19,7 +19,7 @@ class BigramLanguageModel(nn.Module):
     Base class for bigram language model.
     """
 
-    def __init__(self, vocab_size, n_embed, block_size, head_size, n_layer, n_head, dropout, device):
+    def __init__(self, vocab_size, n_embed, block_size, n_layer, n_head, dropout, device):
         """
         Components of this model.
         Sets up a token embedding table that is NxN where N = vocab size.

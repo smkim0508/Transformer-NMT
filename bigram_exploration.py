@@ -17,7 +17,6 @@ device = "cpu"
 chars = sorted(list(set(text)))
 vocab_size = len(chars)
 n_embed = 32
-head_size = n_embed # for now, keep the same as embedding size
 print(f"Vocab size: {len(chars)}, Vocab: {''.join(chars)}")
 
 # define simple encoder-decoder to map Vocab
@@ -94,7 +93,6 @@ model = BigramLanguageModel(
     vocab_size=vocab_size,
     n_embed=n_embed,
     block_size=block_size,
-    head_size=head_size,
     n_head=4,
     n_layer=4,
     dropout=0.2,

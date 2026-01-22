@@ -18,12 +18,11 @@ eval_interval = 500 # used to average loss during train for logging
 learning_rate = 3e-4 # TODO: when to increase/decay lr?
 device = "cuda" if torch.cuda.is_available() else "cpu" # use GPU if available TODO: does tensor.to(device) not affect for CPU?
 eval_iters = 200
-n_embed = 384 # dims for token embeddings
-head_size = n_embed # for now, head_size == n_embed
-n_head = 6 # number of heads in multi-head attention
-n_layer = 6 # number of transformer blocks
+n_embed = 64 # dims for token embeddings
+n_head = 4 # number of heads in multi-head attention
+n_layer = 4 # number of transformer blocks
 dropout = 0.2 # 20% of intermediate nodes are disabled at random
-# NOTE: implies head_size = n_embed//n_head = 384//6 = 64
+# NOTE: implies head_size = n_embed//n_head = 64//4 = 16
 
 torch.manual_seed(1337) # for reproducibility
 
@@ -95,7 +94,6 @@ if __name__ == "__main__":
         vocab_size=vocab_size,
         n_embed=n_embed,
         block_size=block_size,
-        head_size=head_size,
         n_head=n_head,
         n_layer=n_layer,
         dropout=dropout,
