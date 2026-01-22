@@ -70,6 +70,11 @@ NOTE: The NMT is built, trained, and evaluated using Google Colab's cloud resour
 - An architecture described in the attention paper that's essentially multiple self-attention heads in parallel, then concatenated. 
 - head_size passed into each Head should be reduced by a factor of 1/n_heads to account for same final dimensions after concatenation.
 - This allows for multiple independent channels of communication, which enables more diverse exploration of tokens compared to a single head.
+### Transformer Block
+- Comprised (at base) of the multi-head attention layer and a feed-forward layer (linear layer + ReLU or other non-linearity)
+    - The feed-forward layer gives the model more "time" to make meaningful data out of the attention computation. 
+- Allows interlayering the layers for a deeper training.
+- Can lead to optimization issue as model becomes deeper -> we need methods to ensure optimizability remains.
 
 ### TODO:
 - bigram model
