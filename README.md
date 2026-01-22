@@ -66,6 +66,11 @@ NOTE: The NMT is built, trained, and evaluated using Google Colab's cloud resour
 - In the original attention paper, the attention matrix is defined as Softmax((Q@K_T)/sqrt(head_size))@V, where dividing by sqrt(head_size) ensures that the variance of weight (the arg. to softmax) will be within unit Gaussian (1), not head_size.
     - This is crucial because if there are extremes in weight, softmax will converge towards a single high value and leave the rest near 0, which is undesirable (signifies only a single other node is important to any given node)
 - PyTorch's matmultiplication (@) operation automatically takes the last 2 dimensions as matrix dims and any leading dims as the batching dimensions, auto-broadcasting if needed.
+### Multi-Head Attention
+- An architecture described in the attention paper that's essentially multiple self-attention heads in parallel, then concatenated. 
+- head_size passed into each Head should be reduced by a factor of 1/n_heads to account for same final dimensions after concatenation.
+- This allows for multiple independent channels of communication, which enables more diverse exploration of tokens compared to a single head.
+
 ### TODO:
 - bigram model
 - GPT model
