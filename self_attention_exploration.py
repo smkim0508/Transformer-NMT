@@ -78,6 +78,6 @@ tril = torch.tril(torch.ones(T,T))
 # NOTE: instead of torch.zeros init, we keep the weight matrix and backfill the upper half with -inf and softmax.
 weight = weight.masked_fill(tril == 0, float('-inf'))
 weight = F.softmax(weight, dim=1)
-# instead of multiplying w/ x, we do mat.mul. with value
+# instead of taking the raw token x, we do mat. mul. with value to allow flexibility
 out = weight @ v # (B, T, T) @ (B, T, head_size) -> (B, T, head_size)
 print(f"self-attention out shape: {out.shape}\n{out}")

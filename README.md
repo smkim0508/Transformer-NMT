@@ -58,6 +58,8 @@ NOTE: The NMT is built, trained, and evaluated using Google Colab's cloud resour
     - Self-attention solves this via having each tokens emit a KEY and a QUERY value. By taking a dot product, if a key and query has high affinity for each other, there will be stronger value extracted.
         - Each key also holds a unique value for the token.
     - We initially define key, query, value via linear layers, and by having weight be defined as matrix multiplication of query and key's transpose, the resulting weight matrix holds the dot product of token i's query vector with token j's key vector at weight(i, j). This represents how much each token's query attends to another's key.
+        - High dot product in the weight matrix for (i, j) represents high attention between token i's query and token j's key.
+- By using value projection (another lin. layer to process x -> v), we achieve flexibility in representing the token beyond its raw form, and allow us to manipulate the dimension freely.
 - PyTorch's matmultiplication (@) operation automatically takes the last 2 dimensions as matrix dims and any leading dims as the batching dimensions, auto-broadcasting if needed.
 ### TODO:
 - bigram model
