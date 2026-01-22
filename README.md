@@ -74,7 +74,13 @@ NOTE: The NMT is built, trained, and evaluated using Google Colab's cloud resour
 - Comprised (at base) of the multi-head attention layer and a feed-forward layer (linear layer + ReLU or other non-linearity)
     - The feed-forward layer gives the model more "time" to make meaningful data out of the attention computation. 
 - Allows interlayering the layers for a deeper training.
-- Can lead to optimization issue as model becomes deeper -> we need methods to ensure optimizability remains.
+- Can lead to optimization issue as model becomes deeper -> we need methods to ensure optimizability remains. 
+    - Skip/residual connections is one way to achieve this. A residual pathway allows joining the original input w/ processed values via addition.
+    - Layer normalization is another highly effective method. 
+        - In modern practice, normalization is usually applied BEFORE transformation, unlike the original paper where norm. is applied AFTER.
+        - TODO: batch norm vs layer norm?
+- To prevent overfitting, dropout layers can be added during every forward/backward pass, as found by "Dropout: A Simple Way to Prevent Neural Networks from Overfitting".
+    - This randomly shuts off connection between different nodes in the neural net as a regularization technique.
 
 ### TODO:
 - bigram model
