@@ -19,7 +19,7 @@ class BigramLanguageModel(nn.Module):
     Base class for bigram language model.
     """
 
-    def __init__(self, vocab_size, n_embed, block_size, head_size, device):
+    def __init__(self, vocab_size, n_embed, block_size, head_size, n_layer, n_head, dropout, device):
         """
         Components of this model.
         Sets up a token embedding table that is NxN where N = vocab size.
@@ -33,21 +33,10 @@ class BigramLanguageModel(nn.Module):
         self.position_embedding_table = nn.Embedding(block_size, n_embed) # positional embedding
         # NOTE: transformer blocks hold sa heads and ff layer
         # TODO: sequential vs modulelist
-        self.blocks = nn.Sequential(
-            Block(n_embed=n_embed, n_head=4, block_size=block_size),
-            Block(n_embed=n_embed, n_head=4, block_size=block_size),
-            Block(n_embed=n_embed, n_head=4, block_size=block_size),
-            nn.LayerNorm(n_embed)
-        )
+        self.blocks = nn.Sequential(*[Block(n_embed=n_embed, n_head=n_head, block_size=block_size, dropout=dropout) for _ in range(n_layer)])
+        self.ln_f = nn.LayerNorm(n_embed) # final layer norm
         # language model linear layer
         self.lm_head = nn.Linear(n_embed, vocab_size)
-
-        # the below layers are now part of the transformer, not necessary
-        # self-attention head layer (multi-headed)
-        # NOTE: head_size is reduced by factor of n_heads to account for concat -> output is still head_size
-        self.sa_heads = MultiHeadAttention(4, head_size//4, n_embed, block_size)
-        # feed forward layer
-        self.ff_layer = FeedForward(n_embed)
 
         # params for convenience
         self.device = device
@@ -67,6 +56,7 @@ class BigramLanguageModel(nn.Module):
         positional_embeddings = self.position_embedding_table(torch.arange(T, device=self.device)) # (T, n_embed)
         x = token_embeddings + positional_embeddings # (B, T, n_embed) NOTE: positional embeddings are broadcasted
         x = self.blocks(x) # (B, T, n_embed)
+        x = self.ln_f(x) # (B, T, n_embed)
         # x = self.sa_heads(x) # apply layer of multi-headed self-attention (B, T, head_size)
         # x = self.ff_layer(x) # (B, T, n_embed)
         logits = self.lm_head(x) # (B, T, vocab_size) NOTE: this layer expects n_embed as input

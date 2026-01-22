@@ -95,6 +95,9 @@ model = BigramLanguageModel(
     n_embed=n_embed,
     block_size=block_size,
     head_size=head_size,
+    n_head=4,
+    n_layer=4,
+    dropout=0.2,
     device=device
 )
 # pass xb as idx, xy as target

@@ -20,6 +20,9 @@ device = "cuda" if torch.cuda.is_available() else "cpu" # use GPU if available T
 eval_iters = 200
 n_embed = 32 # dims for token embeddings
 head_size = n_embed # for now, head_size == n_embed
+n_head = 4 # number of heads in multi-head attention
+n_layer = 4 # number of transformer blocks
+dropout = 0.2
 
 torch.manual_seed(1337) # for reproducibility
 
@@ -92,6 +95,9 @@ if __name__ == "__main__":
         n_embed=n_embed,
         block_size=block_size,
         head_size=head_size,
+        n_head=n_head,
+        n_layer=n_layer,
+        dropout=dropout,
         device=device
     )
     m = model.to(device) # use GPU if available
@@ -128,4 +134,3 @@ if __name__ == "__main__":
     # generate text from model
     context = torch.zeros((1,1), dtype=torch.long, device=device)
     print(f"Generated text: {decode(m.generate(context, max_new_tokens=500)[0].tolist())}")
-
