@@ -137,7 +137,7 @@ if __name__ == "__main__":
         if (iter+1) % eval_interval == 0:
             # NOTE: since we have a progress bar, avoid printing loss until the very end
             loss = (estimate_loss(m))
-            loss.update({'iter': iter})
+            loss.update({'iter': iter+1})
             losses.append(loss)
             # save checkpoint at this point
             save_checkpoint(model, iter+1)
@@ -171,12 +171,12 @@ if __name__ == "__main__":
     plt.legend()
     plt.grid(True)
     plt.savefig('outputs/loss_plot.png')
-    plt.show()
+    # plt.show()
 
     # generate text from model
     context = torch.zeros((1,1), dtype=torch.long, device=device)
     generated_text = decode(m.generate(context, max_new_tokens=10000)[0].tolist())
-    print(f"Generated text:\n{generated_text}")
+    # print(f"Generated text:\n{generated_text}")
 
     # save generated text to file
     with open('outputs/generated_text.txt', 'w', encoding='utf-8') as f:
