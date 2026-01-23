@@ -78,7 +78,7 @@ NOTE: The NMT is built, trained, and evaluated using Google Colab's cloud resour
     - Skip/residual connections is one way to achieve this. A residual pathway allows joining the original input w/ processed values via addition.
     - Layer normalization is another highly effective method. 
         - In modern practice, normalization is usually applied BEFORE transformation, unlike the original paper where norm. is applied AFTER.
-        - TODO: batch norm vs layer norm?
+        - Batch normalization is similar to layer normalization, but as implied by its name, normalizes across multiple batches. This is more useful for tasks involving CNN or similar where fixed spatial properties can benefit from cross-batch updates. For Transformer where communication should be held independent across batches, this is not desired and layer norm is used.
 - To prevent overfitting, dropout layers can be added during every forward/backward pass, as found by "Dropout: A Simple Way to Prevent Neural Networks from Overfitting".
     - This randomly shuts off connection between different nodes in the neural net as a regularization technique.
 ### Encoder-Decoder Architecture and Cross-Attention Mechanism

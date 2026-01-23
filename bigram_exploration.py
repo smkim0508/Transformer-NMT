@@ -92,22 +92,22 @@ for b in range(batch_size): # batch dim
 # test the bigram model
 model = BigramLanguageModel(vocab_size=vocab_size)
 # pass xb as idx, xy as target
-logits, loss = model(xb, yb) # TODO: verify how this refers to forward()
+logits, loss = model(xb, yb)
 print(logits.shape) # we expect the shape to be (block_size * batch_size, vocab_size), since we stretched the dimensions in model definition
 print(loss)
-# NOTE: the CE loss expected without any training is -ln(1/vocab_size) = -ln(1/81) ~ 4.394
-# TODO: verify the above statement and reason the discrepency in actual loss
+# NOTE: the CE loss expected without any training is -ln(1/vocab_size) = -ln(1/65) ~ 4.17
+# the actual loss may differ slightly due to random initialization -> non-uniform distribution
 
 # now experiment w/ token generation
 idx = torch.zeros((1,1), dtype=torch.long) # test with a 1x1 tensor holding 0, to represent idx being 0 (the first item in Vocab)
-# TODO: verify how idx being 1x1 tensor fits in to the above logic
 # NOTE: take the 0th idx to fetch first batch of results, and convert to simple python list (from tensor) to feed into decoder
 print(f"random tokens generated: {decode(model.generate(idx, max_new_tokens=100)[0].tolist())}") # the output here is expected to be non-sensical
 
 # now we can experiment w/ training to see the difference
 
 # optimizer set to Adam
-optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3) # TODO: diff between Adam and AdamW?
+# NOTE: AdamW is the more modern version of Adam
+optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3)
 
 # train w/ larger batch size
 batch_size = 32
@@ -116,7 +116,7 @@ for step in tqdm(range(steps)):
     # sample a batch of data
     xb, yb = get_batch('train', batch_size=batch_size, block_size=block_size)
     # eval loss
-    logits, loss = model.forward(xb, yb)
+    logits, loss = model(xb, yb)
     if not loss:
         print(f"Error: loss must exist, please verify target is set")
         break

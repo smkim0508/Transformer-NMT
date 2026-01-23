@@ -26,7 +26,7 @@ class Head(nn.Module):
         weight = q @ k.transpose(-2, -1) * C**-0.5 # (B, T, C) @ (B, C, T) -> (B, T, T)
         weight = weight.masked_fill(self.tril[:T, :T] == 0, float('-inf')) # (B, T, T)
         weight = F.softmax(weight, dim=-1) # (B, T, T)
-        weight = self.dropout(weight) # dropout right after softmax affinities TODO: what about other positions?
+        weight = self.dropout(weight) # dropout right after softmax affinities NOTE: this ensures regularization on attention without affecting other dims
         # perform the weighted aggregation of the values
         v = self.value(x) # (B, T, C)
         out = weight @ v # (B, T, T) @ (B, T, C) -> (B, T, C)
@@ -40,6 +40,7 @@ class MultiHeadAttention(nn.Module):
 
     def __init__(self, n_heads, head_size, n_embed, block_size, dropout):
         super().__init__()
+        # NOTE: ModuleList's behavior during forward pass must be explicitly defined
         self.heads = nn.ModuleList([Head(
             n_embed=n_embed,
             head_size=head_size,
@@ -50,7 +51,7 @@ class MultiHeadAttention(nn.Module):
         self.dropout = nn.Dropout(dropout)
 
     def forward(self, x):
-        # TODO: what exactly does .cat() operation do to dimensionality?
+        # NOTE: .cat() just places vectors end-to-end, so they end up forming channel dim of n_embed = n_heads * head_size
         out = torch.cat([head(x) for head in self.heads], dim=-1)
         out = self.proj(out)
         out = self.dropout(out)

@@ -16,8 +16,8 @@ batch_size = 64 # number of independent sequences in parallel
 block_size = 256 # max context window size for prediction
 max_iters = 5000
 eval_interval = 500 # used to average loss during train for logging
-learning_rate = 3e-4 # TODO: when to increase/decay lr?
-device = "cuda" if torch.cuda.is_available() else "cpu" # use GPU if available TODO: does tensor.to(device) not affect for CPU?
+learning_rate = 3e-4
+device = "cuda" if torch.cuda.is_available() else "cpu" # use GPU if available
 eval_iters = 200
 n_embed = 64 # dims for token embeddings
 n_head = 4 # number of heads in multi-head attention
@@ -82,7 +82,7 @@ def estimate_loss(model):
         losses = torch.zeros(eval_iters)
         for k in range(eval_iters):
             X, Y = get_batch(split, batch_size=batch_size, block_size=block_size)
-            logits, loss = model.forward(X, Y)
+            logits, loss = model(X, Y)
             losses[k] = loss.item() # accumulate loss
         out[split] = losses.mean() # average loss for each split
     model.train() # return back to training mode
@@ -120,13 +120,13 @@ if __name__ == "__main__":
         xb, yb = get_batch('train', batch_size=batch_size, block_size=block_size)
 
         # eval the loss and update weights
-        logits, loss = m.forward(xb, yb)
+        logits, loss = m(xb, yb)
         if not loss:
             print(f"Error: loss must exist, please verify target is set")
             break
         optimizer.zero_grad(set_to_none=True) # init gradients
         loss.backward()
-        optimizer.step() # steps down gradient TODO: exact functionality?
+        optimizer.step() # steps down gradients
 
     for loss in losses:
         print(f"Step {loss['iter']}: train loss {loss['train']:.4f}, val loss {loss['val']:.4f}")

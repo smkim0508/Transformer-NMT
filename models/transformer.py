@@ -32,7 +32,6 @@ class TransformerLanguageModel(nn.Module):
         self.token_embeddings_table = nn.Embedding(vocab_size, n_embed) # semantic embedding
         self.position_embedding_table = nn.Embedding(block_size, n_embed) # positional embedding
         # NOTE: transformer blocks hold sa heads and ff layer
-        # TODO: sequential vs modulelist
         self.blocks = nn.Sequential(*[Block(n_embed=n_embed, n_head=n_head, block_size=block_size, dropout=dropout) for _ in range(n_layer)])
         self.ln_f = nn.LayerNorm(n_embed) # final layer norm
         # language model linear layer
@@ -90,12 +89,12 @@ class TransformerLanguageModel(nn.Module):
             # crop idx to the last block_size tokens
             idx_crop = idx[:, -self.block_size:]
             # first fetch predictions, loss is not used
-            logits, _ = self.forward(idx_crop) # TODO: how could this reference target() w/ just self(idx)?
+            logits, _ = self(idx_crop) # (B, T, C = vocab_size)
             # fetch only the last time step NOTE: this can be expanded to a more general history for increased context_size
-            logits = logits[:, -1, :] # becomes (B,C) -> TODO: what about previously?
+            logits = logits[:, -1, :] # becomes (B,C) after taking pred. for only the last time step (the only "unknown" prediction)
             # apply softmax for probabilities
-            probs = F.softmax(logits, dim=1) # (B,C)
-            # sample from distribution the best prediction TODO: why not argmax or similar?
+            probs = F.softmax(logits, dim=1) # (B,C) # NOTE: before passing into softmax, we can divide logits by temp to vary "creativity"
+            # sample from distribution the best prediction; this can be replaced with argmax, but sampling introduces random "creativity" to generation
             idx_next = torch.multinomial(probs, num_samples=1) # (B,1)
             # append sampled index to running sequence
             idx = torch.cat((idx, idx_next), dim=1) # (B,T+1)

@@ -15,12 +15,12 @@ class Block(nn.Module):
 
     def __init__(self, n_embed, n_head, block_size, dropout):
         super().__init__()
-        # NOTE: head_size is reduced by factor of n_head to account for concat -> output is still head_size
+        # NOTE: head_size is reduced by factor of n_head to account for concat -> output is still n_embed after cat, and each parallel head can "learn" different behaviors
         head_size = n_embed // n_head # dimensionality of each head
         self.sa = MultiHeadAttention(n_heads=n_head, head_size=head_size, n_embed=n_embed, block_size=block_size, dropout=dropout)
         self.ff = FeedForward(n_embed, dropout=dropout)
-        # layer normalizations
-        self.ln1 = nn.LayerNorm(n_embed) # TODO: why n_embed?
+        # layer normalizations across last idx of x (channel dim), given by n_embed size
+        self.ln1 = nn.LayerNorm(n_embed)
         self.ln2 = nn.LayerNorm(n_embed)
         
     def forward(self, x):

@@ -56,7 +56,7 @@ class BigramLanguageModel(nn.Module):
             # only need the last token for bigram
             idx_last = idx[:, -1:]  # (B, 1)
             # get predictions
-            logits, _ = self.forward(idx_last)
+            logits, _ = self(idx_last)
             # logits is (B, 1, vocab_size), take last position
             logits = logits[:, -1, :]  # (B, vocab_size)
             # convert to probabilities
