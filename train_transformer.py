@@ -19,9 +19,9 @@ eval_interval = 500 # used to average loss during train for logging
 learning_rate = 3e-4
 device = "cuda" if torch.cuda.is_available() else "cpu" # use GPU if available
 eval_iters = 200
-n_embed = 64 # dims for token embeddings
-n_head = 4 # number of heads in multi-head attention
-n_layer = 4 # number of transformer blocks
+n_embed = 384 # dims for token embeddings
+n_head = 6 # number of heads in multi-head attention
+n_layer = 6 # number of transformer blocks
 dropout = 0.2 # 20% of intermediate nodes are disabled at random
 # NOTE: implies head_size = n_embed//n_head = 64//4 = 16
 
@@ -88,6 +88,27 @@ def estimate_loss(model):
     model.train() # return back to training mode
     return out
 
+def save_checkpoint(model, iter):
+    """
+    save model checkpoint to refernece in the future
+    """
+    # save model checkpoint
+    checkpoint = {
+        'model_state_dict': model.state_dict(),
+        'optimizer_state_dict': optimizer.state_dict(),
+        'vocab_size': vocab_size,
+        'n_embed': n_embed,
+        'block_size': block_size,
+        'n_head': n_head,
+        'n_layer': n_layer,
+        'dropout': dropout,
+        'stoi': stoi,
+        'itos': itos,
+    }
+    torch.save(checkpoint, f"checkpoints/transformer_model_{iter}.pt")
+    # disabled print for now to not clutter terminal
+    # print(f"Model checkpoint saved to checkpoints/transformer_model_{iter}.pt")
+
 if __name__ == "__main__":
     print(f"Initializing model...")
     # actual training loop defined here
@@ -115,6 +136,8 @@ if __name__ == "__main__":
             loss = (estimate_loss(m))
             loss.update({'iter': iter})
             losses.append(loss)
+            # save checkpoint at this point
+            save_checkpoint(model, iter+1)
 
         # sample batch data
         xb, yb = get_batch('train', batch_size=batch_size, block_size=block_size)
@@ -141,18 +164,6 @@ if __name__ == "__main__":
         f.write(generated_text)
     print("Generated text saved to outputs/generated_text.txt")
 
-    # save model checkpoint
-    checkpoint = {
-        'model_state_dict': m.state_dict(),
-        'optimizer_state_dict': optimizer.state_dict(),
-        'vocab_size': vocab_size,
-        'n_embed': n_embed,
-        'block_size': block_size,
-        'n_head': n_head,
-        'n_layer': n_layer,
-        'dropout': dropout,
-        'stoi': stoi,
-        'itos': itos,
-    }
-    torch.save(checkpoint, 'checkpoints/transformer_model.pt')
-    print("Model checkpoint saved to checkpoints/transformer_model.pt")
+    # do a final save for checkpoint
+    save_checkpoint(model, "final")
+    print("Final model checkpoint saved to checkpoints/transformer_model_final.pt")
