@@ -7,6 +7,9 @@ Refining my PyTorch skills to build models from scratch [2] - Implementing vario
 
 *This README will also contain my personal notes as I review key concepts and practice with examples.*
 - This project is also to be used as custom tutoring material in the future
+
+NOTE: The GPT-style models implemented in this project are based on the Decoder architecture (generative-only) described in the ["Attention is All You Need"](https://arxiv.org/pdf/1706.03762) Paper by Vaswani et al., with reference to OpenAI's GPT-3 Family Open-source Documentation.
+
 NOTE: The NMT is built, trained, and evaluated using Google Colab's cloud resources. It's architecture and comments are documented on a Jupyter/Python notebook: `transformer_nmt.ipynb`.
 
 ## Evaluation Results (GPT)
@@ -174,4 +177,4 @@ NLTK exploration referenced the [Official NLTK Documentation](https://www.nltk.o
 
 The seq2seq Transformer NMT creation follows public material from Princeton University's NLP course, COS484. This material has been modified for personal learning purposes and (will be) extended in self-guided exploration of the model.
 
-The GPT-like Transformer Language Model was created with reference to ["Attention is All You Need"](https://arxiv.org/pdf/1706.03762) by Vaswani et. al. and Andrej Karpathy's [YouTube Tutorial](https://www.youtube.com/watch?v=kCc8FmEb1nY).
+The GPT-like Transformer Language Model was created with reference to ["Attention is All You Need"](https://arxiv.org/pdf/1706.03762) by Vaswani et al. and Andrej Karpathy's [YouTube Tutorial](https://www.youtube.com/watch?v=kCc8FmEb1nY).
