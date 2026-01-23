@@ -11,14 +11,17 @@ from tqdm import tqdm
 from models.bigram import BigramLanguageModel
 from models.transformer import TransformerLanguageModel
 
+# plotting loss graph
+import matplotlib.pyplot as plt
+
 # hyperparameters
 batch_size = 64 # number of independent sequences in parallel
 block_size = 256 # max context window size for prediction
 max_iters = 5000
-eval_interval = 500 # used to average loss during train for logging
+eval_interval = 500 # how often to average loss during train for logging
 learning_rate = 3e-4
 device = "cuda" if torch.cuda.is_available() else "cpu" # use GPU if available
-eval_iters = 200
+eval_iters = 200 # number of iterations to average loss over
 n_embed = 384 # dims for token embeddings
 n_head = 6 # number of heads in multi-head attention
 n_layer = 6 # number of transformer blocks
@@ -151,12 +154,28 @@ if __name__ == "__main__":
         loss.backward()
         optimizer.step() # steps down gradients
 
+    # output loss and plot it as graph
     for loss in losses:
         print(f"Step {loss['iter']}: train loss {loss['train']:.4f}, val loss {loss['val']:.4f}")
     
+    iters = [loss['iter'] for loss in losses]
+    train_losses = [loss['train'].item() for loss in losses]
+    val_losses = [loss['val'].item() for loss in losses]
+
+    plt.figure(figsize=(10, 6))
+    plt.plot(iters, train_losses, label='Train Loss')
+    plt.plot(iters, val_losses, label='Val Loss')
+    plt.xlabel('Iteration')
+    plt.ylabel('Loss')
+    plt.title('Training and Validation Loss')
+    plt.legend()
+    plt.grid(True)
+    plt.savefig('outputs/loss_plot.png')
+    plt.show()
+
     # generate text from model
     context = torch.zeros((1,1), dtype=torch.long, device=device)
-    generated_text = decode(m.generate(context, max_new_tokens=500)[0].tolist())
+    generated_text = decode(m.generate(context, max_new_tokens=10000)[0].tolist())
     print(f"Generated text:\n{generated_text}")
 
     # save generated text to file
