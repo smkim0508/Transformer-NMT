@@ -9,6 +9,62 @@ Refining my PyTorch skills to build models from scratch [2] - Creating various T
 - This project is also to be used as custom tutoring material in the future
 NOTE: The NMT is built, trained, and evaluated using Google Colab's cloud resources. It's architecture and comments are documented on a Jupyter/Python notebook: `transformer_nmt.ipynb`.
 
+## Evaluation Results
+### Transformer Training/Validation Loss
+<img src="outputs/loss_plot.png" alt="loss-graph" width="350" height="230">
+
+
+| Step | Train Loss | Val Loss |
+|------|------------|----------|
+| 500  | 2.0144     | 2.0963   |
+| 1000 | 1.6005     | 1.7781   |
+| 1500 | 1.4408     | 1.6493   |
+| 2000 | 1.3407     | 1.5662   |
+| 2500 | 1.2807     | 1.5252   |
+| 3000 | 1.2320     | 1.5115   |
+| 3500 | 1.1899     | 1.4905   |
+| 4000 | 1.1482     | 1.4810   |
+| 4500 | 1.1087     | 1.4750   |
+| 5000 | 1.0773     | 1.4888   |
+
+The above graph/table shows train and validation loss during 5000 iteration of transformer training.
+
+### Implementation Details
+The following hyperparameters were used to train the transformer to achieve evaluation results above:
+
+| Hyperparameter | Value | Description |
+|----------------|-------|-------------|
+| batch_size     | 64    | Independent sequences processed in parallel |
+| block_size     | 256   | Maximum context window size |
+| max_iters      | 5000  | Total training iterations |
+| learning_rate  | 3e-4  | AdamW optimizer learning rate |
+| n_embed        | 384   | Token embedding dimensions |
+| n_head         | 6     | Number of attention heads |
+| n_layer        | 6     | Number of transformer blocks |
+| dropout        | 0.2   | Dropout probability |
+| head_size      | 64    | Dimensions per attention head (n_embed / n_head) |
+
+#### Dataset
+The [TinyShakespeare Dataset](https://huggingface.co/datasets/karpathy/tiny_shakespeare) was used to train the model.
+
+### Example Output
+The trained model was prompted to create a Shakespeare-like story with no seed, starting w/ a simple newline character marking it's beginning. The following snippet is from the 10000 character story it produced:
+
+```
+PAULINA:
+I'll the losy: for I have rai.
+
+BENVOLIO:
+By heaven, I had before I think,
+And by a made passibure and dear?
+
+PERDIZETER:
+But is thy lawful deliver, I crat myself.
+Voughantage, is a saying death?
+```
+
+Please refer to more generated text in `outputs/generated_text.txt`.
+
 ## NOTES:
 ### NLTK Library
 - As a baseline for working with and building language models, I explore the NLTK library to grasp tokenization practices.
