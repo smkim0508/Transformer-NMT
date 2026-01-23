@@ -1,17 +1,16 @@
-# Transformer-NMT/GPT
-Refining my PyTorch skills to build models from scratch [2] - Creating various Transformer-based models:
-1. Neural Machine Translation
-2. Bigram Language Model (character unit)
-3. GPT Language Model (character unit)
-4. Refined GPT Language Model (token unit)
+# Transformer-GPT/NMT
+Refining my PyTorch skills to build models from scratch [2] - Implementing various Transformer-based architectures:
+1. Neural Machine Translation - WIP
+2. Bigram Language Model (character unit) - Completed
+3. GPT Language Model (character unit) - Completed
+4. Refined GPT Language Model (token unit) - WIP
 
 *This README will also contain my personal notes as I review key concepts and practice with examples.*
 - This project is also to be used as custom tutoring material in the future
 NOTE: The NMT is built, trained, and evaluated using Google Colab's cloud resources. It's architecture and comments are documented on a Jupyter/Python notebook: `transformer_nmt.ipynb`.
 
-## Evaluation Results
-### Transformer Training/Validation Loss
-
+## Evaluation Results (GPT)
+### Training/Validation Loss
 
 <table>
 <tr>
@@ -35,7 +34,7 @@ NOTE: The NMT is built, trained, and evaluated using Google Colab's cloud resour
 </tr>
 </table>
 
-The above graph/table shows train and validation loss during 5000 iteration of transformer training.
+The above graph/table shows train and validation loss during 5000 iteration of GPT model training.
 
 ### Implementation Details
 The following hyperparameters were used to train the transformer to achieve evaluation results above:
