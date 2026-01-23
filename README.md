@@ -11,8 +11,12 @@ NOTE: The NMT is built, trained, and evaluated using Google Colab's cloud resour
 
 ## Evaluation Results
 ### Transformer Training/Validation Loss
-<img src="outputs/loss_plot.png" alt="loss-graph" width="350" height="230">
 
+
+<table>
+<tr>
+<td><img src="outputs/loss_plot.png" alt="loss-graph" width="400"></td>
+<td>
 
 | Step | Train Loss | Val Loss |
 |------|------------|----------|
@@ -26,6 +30,10 @@ NOTE: The NMT is built, trained, and evaluated using Google Colab's cloud resour
 | 4000 | 1.1482     | 1.4810   |
 | 4500 | 1.1087     | 1.4750   |
 | 5000 | 1.0773     | 1.4888   |
+
+</td>
+</tr>
+</table>
 
 The above graph/table shows train and validation loss during 5000 iteration of transformer training.
 
@@ -63,7 +71,7 @@ But is thy lawful deliver, I crat myself.
 Voughantage, is a saying death?
 ```
 
-Please refer to more generated text in `outputs/generated_text.txt`.
+Please refer to more generated text in `outputs/generated_text.txt`. Note that there are still non-sensical outputs throughout generated text, but the overall format and words resemble Shakespearean play writing style.
 
 ## NOTES:
 ### NLTK Library
