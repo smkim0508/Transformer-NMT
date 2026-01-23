@@ -110,7 +110,7 @@ if __name__ == "__main__":
     # training loop
     for iter in tqdm(range(max_iters), desc="Training Model"):
         # calculate the average loss every eval_interval
-        if iter % eval_interval == 0:
+        if (iter+1) % eval_interval == 0:
             # NOTE: since we have a progress bar, avoid printing loss until the very end
             loss = (estimate_loss(m))
             loss.update({'iter': iter})
