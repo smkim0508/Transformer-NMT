@@ -1,9 +1,9 @@
 # Transformer-GPT/NMT
 Refining my PyTorch skills to build models from scratch [2] - Implementing various Transformer-based architectures:
-1. Neural Machine Translation - WIP
-2. Bigram Language Model (character unit) - Completed
-3. GPT Language Model (character unit) - Completed
-4. Refined GPT Language Model (token unit) - WIP
+1. Neural Machine Translation
+2. Bigram Language Model (character unit)
+3. GPT Language Model (character unit)
+4. Refined GPT Language Model (token unit, w/ optimizations)
 
 *This README will also contain my personal notes as I review key concepts and practice with examples.*
 - This project is also to be used as custom tutoring material in the future
