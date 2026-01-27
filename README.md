@@ -164,6 +164,13 @@ Please refer to more generated text in `outputs/generated_text.txt`. Note that t
 - This model then undergoes fine-tuning to perform explicitly assistant-like behaviors, training on curated set of Q&A-like data.
 - A human labeler helps to identify while style of prompt-response pair is best, and this information is used to perform policy optimization (PPO).
     - This part of the process is less readily available open-source.
+### Fine-Tuning (LoRA)
+- LoRA, or Low-Rank Adaptation is a technique for fine-tuning with space/computing efficiency.
+    - Freezes original, pre-trained model weights (in layers where desired).
+    - Adds an additive matrix weight on top of this, which is trained during fine-tuning
+    - This layer is compactly represented as the matrix multiplication of lower-rank matrices.
+    - e.g. if the original weight has size NxM, we reduce using LoRA_B = Nxr, LoRA_A = rxM, where r << N and M.
+    - Effective at task specialization.
 
 ### TODO:
 - GPT model
